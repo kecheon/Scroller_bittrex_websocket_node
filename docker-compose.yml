@@ -20,6 +20,9 @@ services:
       - 80
     networks:
       - platform
+    depends_on:
+      - scrollerdb
+
 networks:
   platform:
     external:
