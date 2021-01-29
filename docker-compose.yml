@@ -12,6 +12,8 @@ services:
       - ./data-volume:/var/lib/mysql
     networks:
       - platform
+    ports:
+      - 3307:3306
   scroller:
     build: ./
     expose:

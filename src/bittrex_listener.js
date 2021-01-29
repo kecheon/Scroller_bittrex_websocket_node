@@ -14,7 +14,7 @@ var multiplier = function(nb){ return nb * 100000000;};
 yaml = require('js-yaml');
 fs   = require('fs');
 try {
-  var config_markets = yaml.safeLoad(fs.readFileSync('/usr/src/app/config.yml', 'utf8'));
+  var config_markets = yaml.load(fs.readFileSync(__dirname + '/config.yml', 'utf8'));
 } catch (e) {
   console.log(e);
 }
@@ -30,7 +30,8 @@ baseCurrencyList.forEach(function(baseCurrency){
 });
 
 var con = mysql.createConnection({
-  host: "scrollerdb",
+  host: "localhost",
+  port: 3307,
   user: "root",
   password: "pass",
   database: "Scroller_db"
@@ -46,16 +47,21 @@ var insertToDB = function(market){
     volume, base_volume, open_buy_orders, open_sell_orders, moy_prev_day) \
     VALUES(" + "4242" + ", \'" +
     market.MarketName + "\', \'" +
-    multiplier(market.Bid) + "\', \'" +
-    multiplier(market.Ask) + "\', \'" +
-    multiplier(market.Last) + "\', \'" +
-    multiplier(market.High) + "\',\'" +
-    multiplier(market.Low) + "\', \'" +
+    // multiplier(market.Bid) + "\', \'" +
+    // multiplier(market.Ask) + "\', \'" +
+    // multiplier(market.Last) + "\', \'" +
+    // multiplier(market.High) + "\',\'" +
+    // multiplier(market.Low) + "\', \'" +
+    market.Bid + "\', \'" +
+    market.Ask + "\', \'" +
+    market.Last + "\', \'" +
+    market.High + "\',\'" +
+    market.Low + "\', \'" +
     market.Volume + "\', \'" +
     market.BaseVolume + "\', \'" +
     market.OpenBuyOrders + "\', \'" +
     market.OpenSellOrders + "\', \'" +
-    multiplier(market.PrevDay) + "\')";
+    market.PrevDay + "\')";
   con.query(sql, function (err, result) {
     if (err) throw err;
   });
@@ -79,7 +85,10 @@ bittrex.options({
           data.A.forEach(function(data_for) {
             sharedMarketListObject = new Array();
             data_for.Deltas.forEach(function(marketsDelta) {
+              // console.log(marketsDelta);
               if (marketList.contains(marketsDelta.MarketName) == true) {
+                // console.log('==========');
+                // console.log(marketsDelta);
                 sharedMarketListObject.push(marketsDelta)
               }
             });
